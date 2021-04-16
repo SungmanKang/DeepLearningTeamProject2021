@@ -2,7 +2,7 @@
 
 ## Dataset
 
-UT Zappos50K (UT-Zap50K) is a large shoe dataset consisting of 50,025 catalog images collected from Zappos.com. The images are divided into 4 major categories — shoes, sandals, slippers, and boots — followed by functional types and individual brands. The shoes are centered on a white background and pictured in the same orientation for convenient analysis.
+UT Zappos50K (UT-Zap50K) is a large shoe dataset consisting of 50,025 catalog images collected from Zappos.com. The images are divided into 4 major categories — shoes, sandals, slippers, and boots — followed by functional types and individual brands. The shoes are centered on a white background and pictured in the same orientation for convenient analysis. The numbers of images of four categories are ```[('Slippers', 1283), ('Sandals', 5741), ('Boots', 12832), ('Shoes', 30169)]```.
 
 Download Dataset
 ```
@@ -14,6 +14,7 @@ Examples of four classes in the dataset.
 
 <img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/images/data_example.png" width="600"/>
 
+In order to create a balanced dataset, we use a subset of this dataset, which contains 1283 slippers, 1500 sandals, 1500 boots and 1500 shoes.
 
 
 ## Execution
