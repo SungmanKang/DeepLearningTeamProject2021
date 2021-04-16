@@ -1,0 +1,41 @@
+import os
+import shutil
+
+#to use save, load function (Add 04/15)
+from keras.preprocessing.image import load_img, save_img
+from PIL import Image, ImageOps
+
+#from google.colab import drive
+#drive.mount('content/')
+
+os.getcwd()
+# root = '/content/ut-zap50k-images'
+root = 'ut-zap50k-images'
+subfolder_name = []
+def makedir(dirname):
+  foldernames = os.listdir(dirname)
+  for subfolder in foldernames:
+    subfolder_name.append(subfolder)
+    if not os.path.exists(subfolder):
+      os.makedirs(subfolder)
+
+def searchdir(dirname):
+  filenames = os.listdir(dirname)
+
+  for filename in filenames:
+    full_filename = os.path.join(dirname, filename)
+    base_folder_name = full_filename.split('/')[1]
+    # print(full_filename.split('/')[1])
+
+    if os.path.isdir(full_filename):
+      searchdir(full_filename)
+    else:
+      #if there are fewer images than others, we make more images using the mirror function. (Add 04/15)
+      if base_folder_name == 'Sandals' or base_folder_name == 'Slippers':
+        img = load_img(full_filename)
+        mirrored_img = ImageOps.mirror(img)
+        save_img(base_folder_name + '/1flipped_' + os.path.basename(full_filename),mirrored_img)
+      shutil.move(full_filename, base_folder_name + '/' + os.path.basename(full_filename))
+
+makedir(root)
+searchdir(root)
