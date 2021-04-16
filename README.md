@@ -93,6 +93,25 @@ Copy/Paste this in brower to open jupyter notebook:
 [I 16:30:27.170 NotebookApp] http://<ip address>/?token=<token_id>
 ```
 
+### Enviroment setup
+Please do not execute the following commands on the Login Node! You are supposed to request a resource from Cheaha, and 'ssh' to the resource nodes!
+
+Copy/Paste this command in your local terminal to load Anaconda module:
+```
+module load Anaconda3/2020.07
+```
+Copy/Paste this command in your local terminal to create Environment:
+```
+conda env create -f environment.yml
+```
+Copy/Paste this command in your local terminal to check your environment list, after create environment sucessfully. The environment called ```project``` is the environment for this project.
+```
+conda env list
+```
+
+Please use the installed kernal ```dlproject``` to run the project.
+
+
 ## Deadline
 1. Term Project Presentation -- Apr 22 by 12pm
 2. Term Project Report and Code -- Apr 24 by 11:59pm
