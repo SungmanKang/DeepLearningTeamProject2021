@@ -12,7 +12,7 @@ Download Dataset
 
 Examples of four classes in the dataset.
 
-<img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/images/data_example.png" width="600"/>
+<img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/report/figs/data_example.png" width="600"/>
 
 In order to create a balanced dataset, we use a subset of this dataset, which contains 1283 slippers, 1500 sandals, 1500 boots and 1500 shoes.
 
