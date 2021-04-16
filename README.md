@@ -4,11 +4,16 @@
 
 UT Zappos50K (UT-Zap50K) is a large shoe dataset consisting of 50,025 catalog images collected from Zappos.com. The images are divided into 4 major categories — shoes, sandals, slippers, and boots — followed by functional types and individual brands. The shoes are centered on a white background and pictured in the same orientation for convenient analysis.
 
-### Download Dataset
+Download Dataset
 ```
 !wget http://vision.cs.utexas.edu/projects/finegrained/utzap50k/ut-zap50k-images.zip
 !unzip ut-zap50k-images.zip
 ```
+
+Examples of four classes in the dataset.
+
+<img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/images/data_example.png" width="600"/>
+
 
 
 ## Execution
