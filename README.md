@@ -1,6 +1,6 @@
 # DeepLearningTeamProject2021
 
-# Execution
+## Execution
 These commands are only for the UAB Cheaha server (https://docs.uabgrid.uab.edu/wiki/cheaha). <br>
 ### Connect to Cheaha 
 Start your terminal. <br>
