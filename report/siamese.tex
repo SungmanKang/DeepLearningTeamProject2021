@@ -1,2 +1,18 @@
 \section{Siamese Network}
 
+Nowadays, finding similar images in a large image collection is a universal task in computer vision systems. It could be a very time-consuming procedure. 
+
+\section{Contrastive Loss}
+Contrastive loss only focuses on positive or negative pairs. Positive pairs are composed by same-class images and negative ones by distinct-class pairs. Formally, the network transforms the pair of input images $\{x_{1,i}, x_{2,i}\}$ into $\{f_{1,i}, f_{2,i}\}$ embedding vectors. The labels are either $y_i = 1$ for positive pairs or $y_i = 0$ for negative pairs.
+
+\begin{equation}
+L = \frac{1}{2N}\sum_{i=1}^{N}[(y_i) || f_{1,i} - f_{2,i} ||_2^2 + (1 - y_i)\{ max(0, m - ||f_{1,i} - f_{2,i}||_2) \} ^2]
+\end{equation}
+
+where $m$ is the margin, usually set to $1.0$ and $N$ is the batch size.
+
+Intuitively, this loss penalizes when a positive pair is far away or a negative pair too close. Therefore, in an optimal case, positives are nearby 1.0 and negatives close to 0.0.
+
+\section{Triplet Loss}
+
+
