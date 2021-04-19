@@ -23,10 +23,15 @@ In this project, we apply methods to the UT Zappos50K dataset \cite{yu2014fine},
     \hline % inserts single horizontal line
     30169 & 1283 & 5741 & 12832 \\% inserting body of the table
     1500 & 1283 & 1500 & 1500 \\% inserting body of the table
+    2500 & 2500 & 2500 & 2500 \\% inserting body of the table
     \hline 
     \end{tabular}
 \label{table:data} % is used to refer this table in the text
 \end{table}
 
-In this project, we only need the four major categories. So we merge all the images in each sub-folders, shown in figure \ref{fig:data_folder} into the category folder. In this way, we can label each image with its category folder name. Moreover, the first row of table \ref{table:data} represents the distribution of the four categories. We can see that the distribution of the dataset is very imbalanced. An imbalanced dataset does not benefit from applying transfer learning. To create a balanced dataset, we choose the first 1500 images from each category except Slippers, which use all the images. So in total, we have 5783 samples, as shown in the second row of table \ref{table:data}. On the other hand, our models implemented in this project all work well with a small dataset. Then we partition these samples into train, test, validation datasets with a ratio of 8:1:1. 
+In this project, we only need the four major categories. So we merge all the images in each sub-folders, shown in figure \ref{fig:data_folder} into the category folder. In this way, we can label each image with its category folder name. Moreover, the first row of table \ref{table:data} represents the distribution of the four categories. We can see that the distribution of the dataset is very imbalanced. Especially, slippers are fewer than others. An imbalanced dataset does not benefit from applying transfer learning. To create a balanced dataset, we choose the first 1500 images from each category except Slippers, which use all the images. So in total, we have 5783 samples, as shown in the second row of table \ref{table:data}. 
+
+Besides, we know data argumentation such as flips, translations or rotations is good for getting more images. The ImageOps module contains some image processing operations. So we choose the mirror function, actually, it is the same as horizontal flip. In this way, we try to create a larger sub-dataset which is shown in the third row of table \ref{table:data}. In this project, we conduct an experiment to compare these two datasets. 
+
+On the other hand, our models implemented in this project all work well with a small dataset. Then we partition these samples into train, test, validation datasets with a ratio of 8:1:1. 
 
