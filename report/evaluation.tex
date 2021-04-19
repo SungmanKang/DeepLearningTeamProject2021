@@ -51,16 +51,36 @@ In this section, we first show the training loss for all the models, and we furt
 
 \subsubsection{Tranning Loss}
 
-Figure \ref{fig:trainloss} shows the training loss for all the models.
+Figure \ref{fig:siatrainloss} shows the training loss for the three implementations of the siamese network. Figure \ref{ffig:tertrainloss} shows the training loss for the three implementations of the transfer Learning.
+
 
 \begin{figure}[h]
   \centering
   \begin{subfigure}[b]{0.48\linewidth}
-    \includegraphics[width=\linewidth]{figs/transfer_loss.png}
-  \caption{Xception}
-  \label{fig:transfer_loss}
+  \includegraphics[width=\linewidth]{figs/transfer_loss.png}
+  \caption{Transfer Learning version 1}
+  \label{fig:con_loss}
   \end{subfigure}
-   \hfill
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/transfer_loss_2.png}
+   \caption{Transfer Learning version 2}
+   \label{fig:tri_loss}
+  \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/transfer_loss_3.png}
+   \caption{Transfer Learning version 3}
+   \label{fig:tri_loss_2}
+  \end{subfigure}
+  \hfill
+    \caption{Training loss of the three implementations of transfer Learning.}
+    \label{fig:tertrainloss}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
   \begin{subfigure}[b]{0.48\linewidth}
   \includegraphics[width=\linewidth]{figs/con_loss.png}
   \caption{Contrastive loss}
@@ -75,13 +95,72 @@ Figure \ref{fig:trainloss} shows the training loss for all the models.
     \hfill
     \begin{subfigure}[b]{0.48\linewidth}
    \includegraphics[width=\linewidth]{figs/tri_loss_2.png}
-   \caption{Transfer learning and triplet loss}
+   \caption{Transfer Learning and triplet loss}
    \label{fig:tri_loss_2}
   \end{subfigure}
   \hfill
-    \caption{Trainning Loss.}
-    \label{fig:trainloss}
+    \caption{Training loss of the three implementations of the siamese network.}
+    \label{fig:siatrainloss}
 \end{figure}
+
+\subsubsection{Comparison}
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+  \includegraphics[width=\linewidth]{figs/acc_ter.png}
+  \caption{Accuracy comparison}
+  \label{fig:con_loss}
+  \end{subfigure}
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/time_ter.png}
+   \caption{Time taken comparison}
+   \label{fig:tri_loss}
+  \end{subfigure}
+    \hfill
+    \caption{Comparison of the three implementations of the transfer learning.}
+    \label{fig:siatrainloss}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+  \includegraphics[width=\linewidth]{figs/acc_sia.png}
+  \caption{Accuracy comparison}
+  \label{fig:con_loss}
+  \end{subfigure}
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/time_sia.png}
+   \caption{Time taken comparison}
+   \label{fig:tri_loss}
+  \end{subfigure}
+    \hfill
+    \caption{Comparison of the three implementations of the siamese network.}
+    \label{fig:siatrainloss}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+  \includegraphics[width=\linewidth]{figs/acc.png}
+  \caption{Accuracy comparison}
+  \label{fig:con_loss}
+  \end{subfigure}
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/time.png}
+   \caption{Time taken comparison}
+   \label{fig:tri_loss}
+  \end{subfigure}
+    \hfill
+    \caption{Comparison of the two best implementaions.}
+    \label{fig:siatrainloss}
+\end{figure}
+
+
 
 
 In our implementation, we observe that the triplet loss a little outperforms the contrastive loss. The possible reasons could be the triplet loss tries to be less greedy than contrastive loss since the distance is a relative concept. The triplet loss tries to bring the positive sample closer while also pushing away the negative sample when compared with an anchor, as shown in the figure \ref{fig:tripletloss}. In doing so, the model can clear know if the distance between the anchor sample and positive sample is smaller than the distance between the anchor and negative one. On the other hand, the contrastive loss, only considers one pair at a time, either positive or negative, so in a sense, it is more greedy. It's hard to ensure the similar objects are close enough. 
