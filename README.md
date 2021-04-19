@@ -1,4 +1,24 @@
-# DeepLearningTeamProject2021
+# Image Classification based on transfer learning and Siamese Network
+
+In this project, we implement both the transfer learning and siamese network approaches to classify a large image dataset. We then further explore the efficiency of the models with varying parameters. We also investigate the effect of different loss functions when applying to the siamese network. At last, we compare the performance and accuracy of models.
+
+## Transfer Learning 
+
+<img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/report/figs/transfer_learning.png" width="700"/>
+
+<img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/report/figs/xception.png" width="700"/>
+
+## Siamese Network
+
+In this project, we implement both two loss functions with the architecture shown in the figure below.
+<img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/report/figs/model.png" width="800"/>
+
+This is the training process with contrastive loss function.
+<img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/report/figs/contrastive.png" width="700"/>
+
+This is the training process with triplets loss function.
+<img src="https://github.com/KokoFan16/DeepLearningTeamProject2021/blob/main/report/figs/triplet.png" width="700"/>
+
 
 ## Dataset
 
