@@ -1,6 +1,8 @@
 \section{Evaluation}
 
 \subsection{Implementation of Transfer Learning}
+In our first implementation, as shown on figure \ref {fig: trasfer_implementation1}, we feed an image to Xception model and took the average pooling of the last layer from Xception, and then we used a classification layer directly to classify the image. We used the cross-entropy loss for training. For this approach, we experimented by freezing the weights from Xception and by training it from scratch. 
+On the second implementation, as shown on figure \ref {fig: trasfer_implementation2}, we froze learned weights from Xception but we added a fully connected layer before the prediction layer. For this fully connected, We used 512 Victor dimension because we wanted to match it with the best embedding size of our implementation for siamese network for the comparison. 
 
 \subsection{Implementation of Siamese Network}
 
@@ -41,13 +43,51 @@ We construct the model with triplet loss by calling the TripletSemiHardLoss func
 \end{figure}
 
 \subsubsection{Combination of transfer Learning and triplet loss}
-In this project, we also implement an advanced version that combine the transfer learning with triplet loss. We first use the Xception model to learn the embeddings of the three embeddings in a triplet. 
+In this project, we also implement an advanced version that combine the transfer learning with triplet loss. We first use the Xception model to extract the embeddings of the three embeddings in a triplet. Then, we added 2 dense layers with the expectation that the triplet loss will improve the features extracted from transfer learning.
 
 
 
 \subsection{Comparison and Analysis}
 
 In this section, we first show the training loss for all the models, and we further analyze the effect of different hyperparameters. We then make a comparison of the results of all the models based on both the classification accuracy and the time-consume of training, and meanwhile, we give the possible reasons. Moreover, we not only focus on the overall classification accuracy but also the accuracy of each class. All our experiments are executed on the Cheaha with a single GPU. 
+
+\begin{table}[ht]
+    \caption{Summary of the results on 1500 images} 
+    \centering 
+    \begin{tabular}{c c c c} 
+    \hline\hline 
+    
+    model & Accuracy \% & Epochs & Time (mins)  \\% inserts table
+    \hline % inserts single horizontal line
+    Xception (T0) & 91.8 & 20 & 1.8 \\% inserting body of the table
+    Xception+dense (T1) & 90.7 & 20 & 3.5 \\% inserting body of the table
+    Xception All (T2) & 95.1 & 10 & 5.4 \\% inserting body of the table
+    Our Siamese+Con. Loss (S0) & 92.57 & 32 & 6 \\% inserting body of the table
+    Our Siamese+Triplet. Loss (S1) & 20 & 91.02 & 2 \\% inserting body of the table
+    Xception+Siamese (S2) & 95.85 & 10 & 2 \\% inserting body of the table
+    \hline 
+    \end{tabular}
+\label{table:data} % is used to refer this table in the text
+\end{table}
+
+\begin{table}[ht]
+    \caption{Summary of the results on 2500 images} 
+    \centering 
+    \begin{tabular}{c c c c} 
+    \hline\hline 
+    
+    model & Accuracy \% & Epochs & Time (mins)  \\% inserts table
+    \hline % inserts single horizontal line
+    Xception (T0) & 89.9 & 20 & 4 \\% inserting body of the table
+    Xception+dense (T1) & 89.3 & 20 & 4 \\% inserting body of the table
+    Xception All (T2) & 94.0 & 10 & 6 \\% inserting body of the table
+    Our Siamese+Con. Loss (S0) & 90.2 & 32 & 14 \\% inserting body of the table
+    Our Siamese+Triplet. Loss (S1) & - & - & - \\% inserting body of the table
+    Xception+Siamese (S2) & - & - & - \\% inserting body of the table
+    \hline 
+    \end{tabular}
+\label{table:data} % is used to refer this table in the text
+\end{table}
 
 \subsubsection{Tranning Loss}
 
@@ -156,8 +196,27 @@ Figure \ref{fig:siatrainloss} shows the training loss for the three implementati
    \label{fig:tri_loss}
   \end{subfigure}
     \hfill
-    \caption{Comparison of the two best implementaions.}
+    \caption{Comparison of the two best implementations.}
     \label{fig:siatrainloss}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+  \includegraphics[width=\linewidth]{figs/umab_visualT2.png}
+  \caption{Xception + Siamese (T2)}
+  \label{fig:con_loss}
+  \end{subfigure}
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/umab_visualS2.png}
+   \caption{Siamese all(S2)}
+   \label{fig:tri_loss}
+  \end{subfigure}
+    \hfill
+    \caption{visualization of embedded test data projected to 2D space 	with UMAP using  https://projector.tensorflow.org/.}
+    \label{fig:2Dprojection}
 \end{figure}
 
 

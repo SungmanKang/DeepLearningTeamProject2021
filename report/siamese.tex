@@ -34,7 +34,7 @@ For positive pairs, zero loss means the model generates embeddings for both two 
 Assume $y_i$ is the binary label that equals 1 for a positive pair and 0 for a negative pair. And distance is the euclidian distance. The contrastive loss function is as formula \ref{equ:contrastive}.
 
 \begin{equation}
-L = \frac{1}{2N}\sum_{i=1}^{N}[y_i || v_{1,i} - v_{2,i} ||_2^2 +  (1 - y_i)\{ max(0, m - ||v_{1,i} - v_{2,i}||_2^2) \}]
+L = \frac{1}{2N}\sum_{i=1}^{N}[(1 - y_i) || v_{1,i} - v_{2,i} ||_2^2 +  y_i\{ max(0, m - ||v_{1,i} - v_{2,i}||_2^2) \}]
 \label{equ:contrastive}
 \end{equation}
 
