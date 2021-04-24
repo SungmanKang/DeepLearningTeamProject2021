@@ -36,55 +36,39 @@ The architecture of our implementations of the siamese network is shown as figur
 
 In this project, we implemented three variants of the siamese network. The first one is with contrastive loss, and the second one is with triplet loss. The third one is the combination of transfer learning and the one with triplet loss.
 
-For contrastive loss, we implement and train siamese networks using Keras and Tensorflow. The implementation can be partitioned into three steps: 1) generating image pairs, 2) construct the architecture of the siamese neural network, 3) using contrastive loss to train the model. We adopt a simple strategy to make the image pairs. The positive sample is picked randomly from the same category as the anchor, and label with 1. On the other hand, we grab the negative sample randomly from classes that are different from the anchor and label it with 0. Figure \ref{fig:pairs} shows the examples the positive and negative paris. 
+For the implementation of contrastive loss, we build the model and implement the loss function by ourselves using Keras and Tensorflow. The implementation can be partitioned into three steps: 1) generating image pairs, 2) construct the architecture of the siamese neural network, 3) using contrastive loss to train the model. We adopt a simple strategy to make the image pairs. The positive sample is picked randomly from the same category as the anchor, and label with 1. On the other hand, we grab the negative sample randomly from classes that are different from the anchor and label it with 0. Figure \ref{fig:pairs} shows the examples of the positive and negative pairs. 
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\linewidth]{figs/pairs.png}
-  \caption{Examples of anchor, positive and negative samples.}
+  \caption{Examples of the positive and negative pairs.}
   \label{fig:pairs}
 \end{figure}
 
+For the implementation of triplet loss, we implement it by calling the TripletSemiHardLoss function in TensorFlow Addons. As shown in the paper \cite{schroff2015facenet}, the best results are from Semi-Hard triplets. This implementation contains three steps that are similar to the contrastive loss one. And we used the same strategy to make the triplets. The only difference is that we use the offline mining approach for the first implementation, while the online mining approach for the second one. Offline mining means that pairs are defined at the beginning of the training. Online mining means that triplets are defined for every batch during the training. And the latter one has been proved in better training efficiency and performance.
+
+The CNN model in our implementations is represented in figure \ref{fig:cnn}. The hidden layers consist of convolutional layers, pooling layers, fully connected layers, and normalization layers (ReLU). All the parameters we used for training are as shown in the figure.  
 
 \begin{figure}[h]
  \centering
  \includegraphics[width=\linewidth]{figs/cnn.png}
- \caption{A typical Convolutional Neural Network (CNN) architecture.}
+ \caption{The Convolutional Neural Network (CNN) in our implementations.}
  \label{fig:cnn}
 \end{figure}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figs/contra_model.png}
-  \caption{The model with contrastive loss we built.}
-  \label{fig:contra_model}
-\end{figure}
-
-
-
-
-
-%\subsubsection{Implementation of triplet loss}
-%We construct the model with triplet loss by calling the TripletSemiHardLoss function in TensorFlow Addons. As shown in the paper \cite{}, the best results are from Semi-Hard triplets. The negative is farther from the anchor than the positive, but still offers a positive loss. Figure \ref{fig:tri_model} illustrates the model. 
+Furthermore, to improve the performance of the siamese network, we implemented another version with transfer learning. As shown in the figure, we used the Xception to extract the features firstly, followed by a global average pooling layer, and applied two dense layers on top of that. And this model is trained with the triplet loss. The implementation details are showed in figure \ref{fig:xception_cnn}. 
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{figs/tri_model.png}
-  \caption{The model with triplet loss we built.}
-  \label{fig:tri_model}
+  \includegraphics[width=\linewidth]{figs/xception_cnn.png}
+  \caption{Applying  Xcepetion into our implementation.}
+  \label{fig:xception_cnn}
 \end{figure}
 
-%\subsubsection{Combination of transfer Learning and triplet loss}
-%In this project, we also implement an advanced version that combine the transfer learning with triplet loss. We first use the Xception model to extract the embeddings of the three embeddings in a triplet. Then, we added 2 dense layers with the expectation that the triplet loss will improve the features extracted from transfer learning.
-
-
-
-\subsection{Comparison and Analysis}
-
-In this section, we first show the training loss for all the models, and we further analyze the effect of different hyperparameters. We then make a comparison of the results of all the models based on both the classification accuracy and the time-consume of training, and meanwhile, we give the possible reasons. Moreover, we not only focus on the overall classification accuracy but also the accuracy of each class. All our experiments are executed on the Cheaha with a single GPU. 
+\subsection{Results and Analysis}
 
 \begin{table}[ht]
-    \caption{Summary of the results on 1500 images} 
+    \caption{Summary of the results on 1500 images per category} 
     \centering 
     \begin{tabular}{c c c c} 
     \hline\hline 
@@ -95,7 +79,7 @@ In this section, we first show the training loss for all the models, and we furt
     Xception+dense (T1) & 90.7 & 20 & 3.5 \\% inserting body of the table
     Xception All (T2) & 95.1 & 10 & 5.4 \\% inserting body of the table
     Our Siamese+Con. Loss (S0) & 92.57 & 32 & 6 \\% inserting body of the table
-    Our Siamese+Triplet. Loss (S1) & 20 & 91.02 & 2 \\% inserting body of the table
+    Our Siamese+Triplet. Loss (S1) & 91.02  & 20& 2 \\% inserting body of the table
     Xception+Siamese (S2) & 95.85 & 10 & 2 \\% inserting body of the table
     \hline 
     \end{tabular}
@@ -103,7 +87,7 @@ In this section, we first show the training loss for all the models, and we furt
 \end{table}
 
 \begin{table}[ht]
-    \caption{Summary of the results on 2500 images} 
+    \caption{Summary of the results on 2500 images per category} 
     \centering 
     \begin{tabular}{c c c c} 
     \hline\hline 
@@ -121,61 +105,75 @@ In this section, we first show the training loss for all the models, and we furt
 \label{table:data} % is used to refer this table in the text
 \end{table}
 
-\subsubsection{Tranning Loss}
-
-Figure \ref{fig:siatrainloss} shows the training loss for the three implementations of the siamese network. Figure \ref{ffig:tertrainloss} shows the training loss for the three implementations of the transfer Learning.
 
 
-\begin{figure}[h]
+
+%\begin{figure}[h]
+ % \centering
+ %  \begin{subfigure}[b]{0.48\linewidth}
+ %  \includegraphics[width=\linewidth]{figs/transfer_loss.png}
+ %  \caption{Transfer Learning version 1}
+ %  \label{fig:con_loss}
+ %  \end{subfigure}
+ %  \hfill
+ %   \begin{subfigure}[b]{0.48\linewidth}
+ %   \includegraphics[width=\linewidth]{figs/transfer_loss_2.png}
+ %   \caption{Transfer Learning version 2}
+ %   \label{fig:tri_loss}
+ %  \end{subfigure}
+ %    \hfill
+   %  \begin{subfigure}[b]{0.48\linewidth}
+  %  \includegraphics[width=\linewidth]{figs/transfer_loss_3.png}
+  %  \caption{Transfer Learning version 3}
+ %   \label{fig:tri_loss_2}
+ %  \end{subfigure}
+ %  \hfill
+ %    \caption{Training loss of the three implementations of transfer Learning.}
+ %    \label{fig:tertrainloss}
+ %\end{figure}
+
+
+ %\begin{figure}[h]
+ %  \centering
+ %  \begin{subfigure}[b]{0.48\linewidth}
+ %  \includegraphics[width=\linewidth]{figs/con_loss.png}
+ %  \caption{Contrastive loss}
+  % \label{fig:con_loss}
+  % \end{subfigure}
+  % \hfill
+ %   \begin{subfigure}[b]{0.48\linewidth}
+  %  \includegraphics[width=\linewidth]{figs/tri_loss.png}
+ %   \caption{Triplet loss}
+ %   \label{fig:tri_loss}
+ %  \end{subfigure}
+ %    \hfill
+ %    \begin{subfigure}[b]{0.48\linewidth}
+ %   \includegraphics[width=\linewidth]{figs/tri_loss_2.png}
+  %  \caption{Transfer Learning and triplet loss}
+ %   \label{fig:tri_loss_2}
+ %  \end{subfigure}
+  % \hfill
+  %   \caption{Training loss of the three implementations of the siamese network.}
+ %    \label{fig:siatrainloss}
+ %\end{figure}
+ 
+ \begin{figure}[h]
   \centering
   \begin{subfigure}[b]{0.48\linewidth}
-  \includegraphics[width=\linewidth]{figs/transfer_loss.png}
-  \caption{Transfer Learning version 1}
-  \label{fig:con_loss}
+  \includegraphics[width=\linewidth]{figs/sia_con_data1.png}
+  \caption{Results with the dataset 1.}
+  \label{fig:sia_con_data1}
   \end{subfigure}
   \hfill
    \begin{subfigure}[b]{0.48\linewidth}
-   \includegraphics[width=\linewidth]{figs/transfer_loss_2.png}
-   \caption{Transfer Learning version 2}
-   \label{fig:tri_loss}
+   \includegraphics[width=\linewidth]{figs/sia_con_data2.png}
+   \caption{Results with the dataset 2.}
+   \label{fig:sia_con_data2}
   \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.48\linewidth}
-   \includegraphics[width=\linewidth]{figs/transfer_loss_3.png}
-   \caption{Transfer Learning version 3}
-   \label{fig:tri_loss_2}
-  \end{subfigure}
-  \hfill
-    \caption{Training loss of the three implementations of transfer Learning.}
-    \label{fig:tertrainloss}
+    \caption{Comparison of the results of the siamese network implementation with contrastive loss with two datasets.}
+    \label{fig:sia_con_data}
 \end{figure}
-
-
-\begin{figure}[h]
-  \centering
-  \begin{subfigure}[b]{0.48\linewidth}
-  \includegraphics[width=\linewidth]{figs/con_loss.png}
-  \caption{Contrastive loss}
-  \label{fig:con_loss}
-  \end{subfigure}
-  \hfill
-   \begin{subfigure}[b]{0.48\linewidth}
-   \includegraphics[width=\linewidth]{figs/tri_loss.png}
-   \caption{Triplet loss}
-   \label{fig:tri_loss}
-  \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\linewidth}
-   \includegraphics[width=\linewidth]{figs/tri_loss_2.png}
-   \caption{Transfer Learning and triplet loss}
-   \label{fig:tri_loss_2}
-  \end{subfigure}
-  \hfill
-    \caption{Training loss of the three implementations of the siamese network.}
-    \label{fig:siatrainloss}
-\end{figure}
-
-\subsubsection{Comparison}
 
 \begin{figure}[h]
   \centering
@@ -247,30 +245,18 @@ Figure \ref{fig:siatrainloss} shows the training loss for the three implementati
    \label{fig:tri_loss}
   \end{subfigure}
     \hfill
-    \caption{visualization of embedded test data projected to 2D space 	with UMAP using  https://projector.tensorflow.org/.}
+    \caption{visualization of embedded test data projected to 2D space with UMAP using  https://projector.tensorflow.org/.}
     \label{fig:2Dprojection}
 \end{figure}
 
 
-
-
-In our implementation, we observe that the triplet loss a little outperforms the contrastive loss. The possible reasons could be the triplet loss tries to be less greedy than contrastive loss since the distance is a relative concept. The triplet loss tries to bring the positive sample closer while also pushing away the negative sample when compared with an anchor, as shown in the figure \ref{fig:tripletloss}. In doing so, the model can clear know if the distance between the anchor sample and positive sample is smaller than the distance between the anchor and negative one. On the other hand, the contrastive loss, only considers one pair at a time, either positive or negative, so in a sense, it is more greedy. It's hard to ensure the similar objects are close enough. 
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figs/tripletloss.png}
-  \caption{The Triplet Loss minimizes the distance between an anchor and a positive, and maximizes the distance between the anchor and a negative.}
-  \label{fig:tripletloss}
-\end{figure}
-
-
-Furthermore, we can also compute the similarity between image pairs, as shown in figure \ref{}. Note that the smaller distance between the two images means they are more similar to each other. For example, in the figure, the distance between the first pair is 0.12, and it turns out that they belong to the same class Slippers. As for the second pair, the class of left image is Slippers and the class of right image is Sandals. The distance between them is 0.56, which is much larger than the first pair, as we expected. 
+Furthermore, we can also try to compute the similarity between image pairs, as shown in figure \ref{fig:similarity}. Note that the smaller distance between the two images means they are more similar to each other. For example, in the figure, the distance between the first pair is 0.12, and it turns out that they belong to the same class Slippers. As for the second pair, the class of left image is Slippers and the class of right image is Sandals. The distance between them is 0.56, which is much larger than the first pair, as we expected. 
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figs/similarity.png}
   \caption{Examples of calculating the similarity of image pairs.}
-  \label{fig:similarity}
+  \label{}
 \end{figure}
 
 
