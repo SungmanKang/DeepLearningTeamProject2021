@@ -1,12 +1,31 @@
 \section{Evaluation}
 
 \subsection{Implementation of Transfer Learning}
-In our first implementation, as shown on figure \ref {fig: trasfer_implementation1}, we feed an image to Xception model and took the average pooling of the last layer from Xception, and then we used a classification layer directly to classify the image. We used the cross-entropy loss for training. For this approach, we experimented by freezing the weights from Xception and by training it from scratch. 
-On the second implementation, as shown on figure \ref {fig: trasfer_implementation2}, we froze learned weights from Xception but we added a fully connected layer before the prediction layer. For this fully connected, We used 512 Victor dimension because we wanted to match it with the best embedding size of our implementation for siamese network for the comparison. 
+In our first implementation, as shown on figure \ref {fig:xceptiona}, we feed an image to Xception model and took the average pooling of the last layer from Xception, and then we used a classification layer directly to classify the image. We used the cross-entropy loss for training. For this approach, we experimented by freezing the weights from Xception and by training it from scratch. 
+
+\begin{figure}[h]
+ \centering
+  \begin{subfigure}[b]{\linewidth}
+ \includegraphics[width=\linewidth]{figs/xception_1.png}
+  \caption{Version 1}
+  \label{fig:xceptiona}
+  \end{subfigure}
+    \hfill
+  \begin{subfigure}[b]{\linewidth}
+ \includegraphics[width=\linewidth]{figs/xception_1.png}
+ \caption{Version 2}
+  \label{fig:xceptionb}
+  \end{subfigure}
+    \hfill    
+ \caption{Implemented transfer learning architectures.}
+ \label{fig:xception}
+\end{figure}
+
+On the second implementation, as shown on figure \ref{fig:xceptionb}, we froze learned weights from Xception but we added a fully connected layer before the prediction layer. For this fully connected, We used 512 Victor dimension because we wanted to match it with the best embedding size of our implementation for siamese network for the comparison. 
 
 \subsection{Implementation of Siamese Network}
 
-In this project, we implement both two loss functions with the architecture shown in figure \ref{fig:model}. Our network consists of a batch input layer and a deep CNN followed by L2 normalization, which results in the image embedding. This is followed by a loss function during training. Note that the siamese network was designed originally for the image matching task, not the image classification. Normally, it would have a distance function to compute the similarity between the two embedding vectors as the final outputs. However, our project is for the image classification problem, so we add one more CNN layer on top of that to train the embeddings to generate class output.
+The architecture of our implementations of the siamese network is shown as figure \ref{fig:model}. Our network consists of a batch input layer and a deep CNN followed by L2 normalization, which results in the image embedding. This is followed by a loss function during training. Note that the siamese network was designed originally for calculating the similarity between images, not the image classification. Normally, it would have a distance function to compute the similarity between the two embedding vectors as the final outputs. However, our project is for the image classification problem, so we add one more fully connected layer on top of that to train the embeddings to generate class output. 
 
 \begin{figure}[h]
   \centering
@@ -15,14 +34,23 @@ In this project, we implement both two loss functions with the architecture show
   \label{fig:model}
 \end{figure}
 
-\subsubsection{Implementation of contrastive loss}
-For contrastive loss, we implement and train siamese networks using Keras and Tensorflow. The implementation can be partitioned into three steps: 1) generating image pairs, 2) construct the architecture of the siamese neural network, 3) using contrastive loss to train the model. We adopt a simple strategy to make the image pairs. The positive sample is picked randomly from the same category as the anchor, and label with 1. On the other hand, we grab the negative sample randomly from classes that are different from the anchor and label it with 0. Figure \ref{fig:threesamples} shows the examples of the anchor, positive and negative samples. It's clear that the positive sample is much more similar to the anchor sample than the negative sample. Figure \ref{fig:contra_model} depicts the model we built. We can see all the hyperparameters from the figure. 
+In this project, we implemented three variants of the siamese network. The first one is with contrastive loss, and the second one is with triplet loss. The third one is the combination of transfer learning and the one with triplet loss.
+
+For contrastive loss, we implement and train siamese networks using Keras and Tensorflow. The implementation can be partitioned into three steps: 1) generating image pairs, 2) construct the architecture of the siamese neural network, 3) using contrastive loss to train the model. We adopt a simple strategy to make the image pairs. The positive sample is picked randomly from the same category as the anchor, and label with 1. On the other hand, we grab the negative sample randomly from classes that are different from the anchor and label it with 0. Figure \ref{fig:pairs} shows the examples the positive and negative paris. 
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\linewidth]{figs/threesamples.png}
+  \includegraphics[width=0.9\linewidth]{figs/pairs.png}
   \caption{Examples of anchor, positive and negative samples.}
-  \label{fig:threesamples}
+  \label{fig:pairs}
+\end{figure}
+
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=\linewidth]{figs/cnn.png}
+ \caption{A typical Convolutional Neural Network (CNN) architecture.}
+ \label{fig:cnn}
 \end{figure}
 
 \begin{figure}[h]
@@ -32,8 +60,12 @@ For contrastive loss, we implement and train siamese networks using Keras and Te
   \label{fig:contra_model}
 \end{figure}
 
-\subsubsection{Implementation of triplet loss}
-We construct the model with triplet loss by calling the TripletSemiHardLoss function in TensorFlow Addons. As shown in the paper \cite{}, the best results are from Semi-Hard triplets. The negative is farther from the anchor than the positive, but still offers a positive loss. Figure \ref{fig:tri_model} illustrates the model. 
+
+
+
+
+%\subsubsection{Implementation of triplet loss}
+%We construct the model with triplet loss by calling the TripletSemiHardLoss function in TensorFlow Addons. As shown in the paper \cite{}, the best results are from Semi-Hard triplets. The negative is farther from the anchor than the positive, but still offers a positive loss. Figure \ref{fig:tri_model} illustrates the model. 
 
 \begin{figure}[h]
   \centering
@@ -42,8 +74,8 @@ We construct the model with triplet loss by calling the TripletSemiHardLoss func
   \label{fig:tri_model}
 \end{figure}
 
-\subsubsection{Combination of transfer Learning and triplet loss}
-In this project, we also implement an advanced version that combine the transfer learning with triplet loss. We first use the Xception model to extract the embeddings of the three embeddings in a triplet. Then, we added 2 dense layers with the expectation that the triplet loss will improve the features extracted from transfer learning.
+%\subsubsection{Combination of transfer Learning and triplet loss}
+%In this project, we also implement an advanced version that combine the transfer learning with triplet loss. We first use the Xception model to extract the embeddings of the three embeddings in a triplet. Then, we added 2 dense layers with the expectation that the triplet loss will improve the features extracted from transfer learning.
 
 
 

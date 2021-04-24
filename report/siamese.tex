@@ -1,16 +1,8 @@
 \section{Siamese Network}
 
-Siamese networks, first introduced by Bromley \cite{bromley1993signature} in 1993, contains multiple instances of the same model and share the same configuration and weights. The term “siamese twins,” means “conjoined twins,” which is two identical twins connected in utero. These twins share the same organs. Each sub-network is a typical Convolutional Neural Network (CNN), as shown in figure \ref{fig:cnn}. A CNN usually contains an input layer, an output layer, and multiple hidden layers. The hidden layers consist of convolutional layers, pooling layers, fully connected layers, and normalization layers (ReLU). 
+Siamese networks, first introduced by Bromley \cite{bromley1993signature} in 1993, contains multiple instances of the same model and share the same configuration and weights. The term “siamese twins,” means “conjoined twins,” which is two identical twins connected in utero. These twins share the same organs. Each sub-network is a typical Convolutional Neural Network (CNN).
 
 The siamese networks accept distinct inputs and learn their feature vectors, joined by an energy function at the top. This function computes the similarity between the highest-level feature representation on each side. Parameter updates are mirrored across the twin networks. This means if the weights on one network are updated, then the weights on the other one are also updated. It guarantees the two similar inputs will not be mapped by each network to different locations in feature space. Furthermore, instead of training a classification model to classify the dataset into correct categories, it asks the model to recognize if the two inputs are similar or not. It means that the siamese network architectures do not need to concern themselves with classification to select 1 of N possible classes, like the traditional classification model. Rather, they only answer whether the two inputs are similar or not. Based on the characteristics, siamese networks perform well in the scenario that the dataset consists of numerous categories but in which each class has few samples. Therefore, siamese networks have been successfully applied to address face recognition \cite{schroff2015facenet}, image retrieval, person re-identification \cite{fang2019bilinear}, localization \cite{tompson2015efficient}, and even object tracing \cite{bertinetto2016fully} tasks. 
-
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figs/cnn.png}
-  \caption{A typical Convolutional Neural Network (CNN) architecture.}
-  \label{fig:cnn}
-\end{figure}
 
 In most cases, the siamese networks have a strong embedding capability to learn a non-linear embedding of data to obtain semantically meaningful spaces. In these spaces, the related patterns of similar objects are close to each other while unrelated patterns of different objects are far away from each other. In general, the training of the siamese network is accomplished by two steps: 1) learning non-linear embeddings of inputs, 2) followed by distance-based loss functions. The loss functions usually aim at constraining the learned embeddings to have shorter distances among samples of the same category than the distances of the distinct categories \cite{medela2019constellation}. There are several widely used distance-based loss functions, contrastive loss function \cite{sohn2016improved}, triplet loss \cite{schroff2015facenet}, multiclass-N-pair loss function \cite{chopra2005learning} and so on. The objective of these loss functions is to predict the relative distance between inputs instead of directly a label or a value given an input. The contrastive loss function measures pairs of samples. The triplet loss function is extended to compare a sample with its positive and negative samples. Meanwhile, the multiclass-N-pair loss function is to improve distance loss functions by generalizing triplet loss. The distance-based loss function selection is very flexible in terms of the dataset. 
 
@@ -29,12 +21,12 @@ L_i = \left\{
 \label{equ:loss}
 \end{equation}
 
-For positive pairs, zero loss means the model generates embeddings for both two samples with no distance between them. The corresponding parameters update, therefore, to increase the distance. For negative pairs, zero loss indicates that the distance between the embeddings of the two samples is larger than the margin $m$. Otherwise, the loss is a positive value and the model will update the related parameters to increase the distance for them. As shown in the figure \ref{fig:contrastive}, similar objects are pushed closer together while the dissimilar objects are push away from each other until the distance is larger than the margin $m$. From the formula, we observe that the largest loss of negative pairs is $m$ when the distance between the two samples is 0. Note that, there is no need to increase the distance between the negative pairs when it's already larger than the marge $m$. In doing so, we can save efforts to train other difficult parts. 
+For positive pairs, zero loss means the model generates embeddings for both two samples with no distance between them. The loss is increased with this distance. For negative pairs, zero loss indicates that the distance between the embeddings of the two samples is larger than the margin $m$. Otherwise, the loss is a positive value and the model will update the related parameters to increase the distance for them. As shown in the figure \ref{fig:contrastive}, similar objects are pushed closer together while the dissimilar objects are push away from each other until the distance is larger than the margin $m$. From the formula, we observe that the largest loss of negative pairs is $m$ when the distance between the two samples is 0. Note that, there is no need to increase the distance between the negative pairs when it's already larger than the marge $m$. In doing so, we can save efforts to train other difficult parts. 
 
 Assume $y_i$ is the binary label that equals 1 for a positive pair and 0 for a negative pair. And distance is the euclidian distance. The contrastive loss function is as formula \ref{equ:contrastive}.
 
 \begin{equation}
-L = \frac{1}{2N}\sum_{i=1}^{N}[(1 - y_i) || v_{1,i} - v_{2,i} ||_2^2 +  y_i\{ max(0, m - ||v_{1,i} - v_{2,i}||_2^2) \}]
+L = \frac{1}{2N}\sum_{i=1}^{N}[y_i || v_{1,i} - v_{2,i} ||_2^2 +  (1 - y_i)\{ max(0, m - ||v_{1,i} - v_{2,i}||_2^2) \}]
 \label{equ:contrastive}
 \end{equation}
 
