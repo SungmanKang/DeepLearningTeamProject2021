@@ -70,7 +70,11 @@ We used Adam optimizer with learning rate of 0.001 for all Siamese Network appro
 \end{figure}
 
 \subsection{Results and Analysis}
-Table \ref{table:resultA} summaries the results of our experiment. T0 is the a accuracy for directly classifying the features extracted from Xception. T1 is the result of adding a single fully connected layer before the prediction. This lead to 1\% decrease of accuracy. Most likely the large dense vector lead to over-fitting. We also trained Xception from scratch on this data set as shown in T2, and this improved the results by around 4\%. The next 3 lines are the result siamese network implementation. S0 and S1 are the results for the same model but with a different loss function. In theory and as discussed in the original paper, triplets of training data samples would outperform contrastive loss. However, it is not the case in our experiment. Using contrastive loss results in 1.5\% better accuracy. Finally, the idea where we uses the features from transfer learning and add to dense layers with the siamese network idea of triplets did improve the features for classification. As we see in the last row, the accuracy improved more than 4\% from just applying transfer learning and it did slightly outperform training Xception from scratch by .7\%. This improvement can also be visualized in figure \ref{fig:2Dprojection}. It is a visualization of the embedded test data projected to 2D space with UMAP using Projector from tensorflow. It is clear that the features are much improved and can easily be classified compared with the exception model trained from scratch.
+In this project, we have implemented three variants of transfer learning and three variants of the siamese network, as we mentioned in the last section. In this section, we compare the results of all the variants based on the classification accuracy and the time-consume. All our experiments are executed on the Cheaha supercomputer with a single GPU. 
+
+(Here you may add some implementation details.  ...)
+
+Table \ref{table:resultA}  summarizes the results of these six implementations trained on the dataset with 1500 images per category. T0 is the implementation that directly classifying the features extracted from Xception. T1 is the implementation that adds a single fully connected layer before the prediction. We observe that this leads to a 1\% decrease in performance. Most likely the large dense vector leads to over-fitting. We also trained Xception from scratch on this data set as shown in T2, and it improved the results by around 4\% when compared to T0. As shown in the figure \ref{fig:acc_ter}, it's clear that T2 is the best one among these three variants. Note that we've also made a comparison of the total time taken of the training, as depicted in the figure \ref{fig:time_ter}. The most interesting thing is that the time-consuming of each variant is roughly increasing linearly for these three variants. That means the time taken for each layer of the Xception is almost the same. 
 
 \begin{table}[ht]
     \caption{Summary of the results on 1500 images per category} 
@@ -91,12 +95,93 @@ Table \ref{table:resultA} summaries the results of our experiment. T0 is the a a
 \label{table:resultA} % is used to refer this table in the text
 \end{table}
 
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+  \includegraphics[width=\linewidth]{figs/acc_ter.png}
+  \caption{Accuracy comparison}
+  \label{fig:acc_ter}
+  \end{subfigure}
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/time_ter.png}
+   \caption{Time taken comparison}
+   \label{fig:time_ter}
+  \end{subfigure}
+    \hfill
+    \caption{Comparison of the three implementations of the transfer learning.}
+    \label{fig:siatrainloss1}
+\end{figure}
+
+The next three rows show the results of the variants of the siamese network. S0 and S1 are the variants for the same model but with a different loss function. In theory and as discussed in the original paper, triplets of training data samples would outperform contrastive loss. The triplet loss tries to be less greedy than contrastive loss since the distance is a relative concept. However, it is not the case in our experiment. The one with contrastive loss results in 1.5\% better accuracy. A possible reason could be that the dataset we used is simple for classification. There are significant differences between every two categories. The one with contrastive loss, therefore, could result in a good enough performance. On the other hand, the one with triplet loss trends to be over-fitting. Finally, the implementation that we used the features from Xception and added two dense layers with the siamese network of triplets did improve the features for classification. As we see in the last row, the accuracy improved more than 4\% and 3\% when compared to S1 and S0 respectively. These results are visualized in the figure \ref{fig:acc_sia} as well. It's obvious that S2 performs best among all these three variants. Meanwhile, as shown in the figure \ref{fig:time_ter}, the variants of triplet loss took much less than the variant of contrastive loss. The training time of S2 is almost two times less than S0. The possible reason is that the model with contrastive loss requires more training data than triplet loss. The former one needs both the positive pairs and negative pairs. The anchor samples, therefore, need to be repeated two times. In summary, S2 is the one with the best performance and efficiency among these three variants.
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+  \includegraphics[width=\linewidth]{figs/acc_sia.png}
+  \caption{Accuracy comparison}
+  \label{fig:acc_sia}
+  \end{subfigure}
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/time_sia.png}
+   \caption{Time taken comparison}
+   \label{fig:time_sia}
+  \end{subfigure}
+    \hfill
+    \caption{Comparison of the three implementations of the siamese network.}
+    \label{fig:siatrainloss2}
+\end{figure}
+
+
+We further compared the two best models of transfer learning and the siamese networks. We obverse that S2, the variant of the siamese network, slightly outperforms training Xception from scratch by .7\%. We can see it clearer in figure \ref{fig:acc}. Although it's not a big performance improvement, S2 spent much less time than T2, as shown in figure \ref{fig:time}. S2 reduced more than two times when compared to T2 in terms of training time-consuming. It could be very helpful in the real application, especially the situation with limited computable resources. This comparison can also be visualized in figure \ref{fig:2Dprojection}. They are two visualizations of the embedded test data projected to 2D space with UMAP using Projector from TensorFlow.  It is clear that the features of S2 are much improved and can easily be classified compared with the exception model trained from scratch. 
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+  \includegraphics[width=\linewidth]{figs/acc.png}
+  \caption{Accuracy comparison}
+  \label{fig:acc}
+  \end{subfigure}
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=\linewidth]{figs/time.png}
+   \caption{Time taken comparison}
+   \label{fig:time}
+  \end{subfigure}
+    \hfill
+    \caption{Comparison of the two best implementations.}
+    \label{fig:siatrainloss3}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+   \includegraphics[width=0.9\linewidth]{figs/umab_visualS2.png}
+   \caption{Xception + Siamese (S2)}
+   \label{fig:tri_loss}
+  \end{subfigure}
+  \hfill
+   \begin{subfigure}[b]{0.48\linewidth}
+  \includegraphics[width=\linewidth]{figs/umab_visualT2.png}
+  \caption{Siamese all(T2)}
+  \label{fig:con_loss}
+  \end{subfigure}
+    \hfill
+    \caption{visualization of embedded test data projected to 2D space with UMAP.}
+    \label{fig:2Dprojection}
+\end{figure}
+
+Besides, note that the number of training epochs of all the six variants is different. (you may give an explanation why they are different here. )
+
+
+Moreover, we also trained the variants on a larger dataset that we mentioned in section 2. In this dataset, each category has 2500 images. However, we had to do some data augmentation (mirror only) for the slippers class since it only has 1283 images. Table \ref{table:resultB} shows the results. We observe that the performances of all the variants decreased when compared to the results of the previous dataset. All the performances are reduced by 1\% to 2\%. This decreased the accuracy in all experiments. We believe that it is because all the images are portrayed in the same orientation. So, using mirrored orientated images for a single class confused the models.  Figure \ref{fig:sia_con_data} further demonstrates the comparison in each category. We can see that it affected all the categories, not just the slippers.  A possible reason is that the negative samples are randomly chosen from the classes which are different from the anchor samples. Hence, the flipped images can be the negative ones for all the classes except the slippers. And the distance between the anchor sample and the negative sample would be easily larger than the margin if the negative one is the flipped image. The model then will ignore these samples. Therefore, it would give us a bad performance. In addition, from the figure \ref{fig:sia_con_data}, we can observe that the performance of the Boots category is always the best one. That's because the images of Boots are distinct from others, whereas, the images of other categories are sometimes similar to each other. 
+
 \begin{table}[ht]
     \caption{Summary of the results on 2500 images per category} 
     \centering 
     \begin{tabular}{c c c c} 
-    \hline\hline 
-    
+    \hline\hline   
     model & Accuracy \% & Epochs & Time (mins)  \\% inserts table
     \hline % inserts single horizontal line
     Xception (T0) & 89.9 & 20 & 4 \\% inserting body of the table
@@ -110,59 +195,6 @@ Table \ref{table:resultA} summaries the results of our experiment. T0 is the a a
 \label{table:resultB} % is used to refer this table in the text
 \end{table}
 
-The result summary on table \ref{table:resultB} is for a larger data set where we used 2500 from each class. However, we had to do some data augmentation (mirror only) for the slippers class since it is only 1283 images. This decreased the accuracy in all experiments. We believe that it is because all the images are pictured in the same orientation. So, using mirrored orientated images for a single class confused the models. This confusion affected all the classes not just the slippers class as shown on figure \ref{fig:sia_con_data}.
-
-
-
-%\begin{figure}[h]
- % \centering
- %  \begin{subfigure}[b]{0.48\linewidth}
- %  \includegraphics[width=\linewidth]{figs/transfer_loss.png}
- %  \caption{Transfer Learning version 1}
- %  \label{fig:con_loss}
- %  \end{subfigure}
- %  \hfill
- %   \begin{subfigure}[b]{0.48\linewidth}
- %   \includegraphics[width=\linewidth]{figs/transfer_loss_2.png}
- %   \caption{Transfer Learning version 2}
- %   \label{fig:tri_loss}
- %  \end{subfigure}
- %    \hfill
-   %  \begin{subfigure}[b]{0.48\linewidth}
-  %  \includegraphics[width=\linewidth]{figs/transfer_loss_3.png}
-  %  \caption{Transfer Learning version 3}
- %   \label{fig:tri_loss_2}
- %  \end{subfigure}
- %  \hfill
- %    \caption{Training loss of the three implementations of transfer Learning.}
- %    \label{fig:tertrainloss}
- %\end{figure}
-
-
- %\begin{figure}[h]
- %  \centering
- %  \begin{subfigure}[b]{0.48\linewidth}
- %  \includegraphics[width=\linewidth]{figs/con_loss.png}
- %  \caption{Contrastive loss}
-  % \label{fig:con_loss}
-  % \end{subfigure}
-  % \hfill
- %   \begin{subfigure}[b]{0.48\linewidth}
-  %  \includegraphics[width=\linewidth]{figs/tri_loss.png}
- %   \caption{Triplet loss}
- %   \label{fig:tri_loss}
- %  \end{subfigure}
- %    \hfill
- %    \begin{subfigure}[b]{0.48\linewidth}
- %   \includegraphics[width=\linewidth]{figs/tri_loss_2.png}
-  %  \caption{Transfer Learning and triplet loss}
- %   \label{fig:tri_loss_2}
- %  \end{subfigure}
-  % \hfill
-  %   \caption{Training loss of the three implementations of the siamese network.}
- %    \label{fig:siatrainloss}
- %\end{figure}
- 
  \begin{figure}[h]
   \centering
   \begin{subfigure}[b]{\linewidth}
@@ -181,83 +213,7 @@ The result summary on table \ref{table:resultB} is for a larger data set where w
     \label{fig:sia_con_data}
 \end{figure}
 
-\begin{figure}[h]
-  \centering
-  \begin{subfigure}[b]{0.48\linewidth}
-  \includegraphics[width=\linewidth]{figs/acc_ter.png}
-  \caption{Accuracy comparison}
-  \label{fig:con_loss}
-  \end{subfigure}
-  \hfill
-   \begin{subfigure}[b]{0.48\linewidth}
-   \includegraphics[width=\linewidth]{figs/time_ter.png}
-   \caption{Time taken comparison}
-   \label{fig:tri_loss}
-  \end{subfigure}
-    \hfill
-    \caption{Comparison of the three implementations of the transfer learning.}
-    \label{fig:siatrainloss1}
-\end{figure}
-
-\begin{figure}[h]
-  \centering
-  \begin{subfigure}[b]{0.48\linewidth}
-  \includegraphics[width=\linewidth]{figs/acc_sia.png}
-  \caption{Accuracy comparison}
-  \label{fig:con_loss}
-  \end{subfigure}
-  \hfill
-   \begin{subfigure}[b]{0.48\linewidth}
-   \includegraphics[width=\linewidth]{figs/time_sia.png}
-   \caption{Time taken comparison}
-   \label{fig:tri_loss}
-  \end{subfigure}
-    \hfill
-    \caption{Comparison of the three implementations of the siamese network.}
-    \label{fig:siatrainloss2}
-\end{figure}
-
-
-\begin{figure}[h]
-  \centering
-  \begin{subfigure}[b]{0.48\linewidth}
-  \includegraphics[width=\linewidth]{figs/acc.png}
-  \caption{Accuracy comparison}
-  \label{fig:con_loss}
-  \end{subfigure}
-  \hfill
-   \begin{subfigure}[b]{0.48\linewidth}
-   \includegraphics[width=\linewidth]{figs/time.png}
-   \caption{Time taken comparison}
-   \label{fig:tri_loss}
-  \end{subfigure}
-    \hfill
-    \caption{Comparison of the two best implementations.}
-    \label{fig:siatrainloss3}
-\end{figure}
-
-
-\begin{figure}[h]
-  \centering
-  \begin{subfigure}[b]{0.48\linewidth}
-   \includegraphics[width=\linewidth]{figs/umab_visualS2.png}
-   \caption{Xception + Siamese (S2)}
-   \label{fig:tri_loss}
-  \end{subfigure}
-  \hfill
-   \begin{subfigure}[b]{0.48\linewidth}
-  \includegraphics[width=\linewidth]{figs/umab_visualT2.png}
-  \caption{Siamese all(T2)}
-  \label{fig:con_loss}
-  \end{subfigure}
-    \hfill
-    \caption{visualization of embedded test data projected to 2D space with UMAP using  https://projector.tensorflow.org/.}
-    \label{fig:2Dprojection}
-\end{figure}
-
-We tried to visualize the comparison of the three implementations of the transfer learning, the three implementations of thesiamese network, and the  two best implementations of both with regards of accuracy and time using a bar graph on figures \ref{fig:siatrainloss1} \ref{fig:siatrainloss2} and \ref{fig:siatrainloss3} respectively.
-
-Furthermore, we can also try to compute the similarity between image pairs, as shown in figure \ref{fig:similarity}. Note that the smaller distance between the two images means they are more similar to each other. For example, in the figure, the distance between the first pair is 0.12, and it turns out that they belong to the same class Slippers. As for the second pair, the class of left image is Slippers and the class of right image is Sandals. The distance between them is 0.56, which is much larger than the first pair, as we expected. 
+In addition, we can also try to compute the similarity between image pairs, as shown in figure \ref{fig:similarity}. Note that the smaller distance between the two images means they are more similar to each other. For example, in the figure, the distance between the first pair in the first row is 0.10, and it turns out that they belong to the same class Slippers. As for the second pair in the same row, the class of left image is Slippers and the class of right image is Shoes. The distance between them is 0.84, which is much larger than the first pair, as we expected. 
 
 \begin{figure}[h]
   \centering
