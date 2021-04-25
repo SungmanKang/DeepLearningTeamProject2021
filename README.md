@@ -1,6 +1,6 @@
 # Image Classification based on transfer learning and Siamese Network
 
-In this project, we implement both the transfer learning and siamese network approaches to classify a large image dataset. We then further explore the efficiency of the models with varying parameters. We also investigate the effect of different loss functions when applying to the siamese network. At last, we compare the performance and accuracy of models.
+The goal of transfer learning is to improve the performance of a model on target domains by transferring the knowledge learned from different but related source domains. Siamese network is a set of neural network architectures that contains two or more subnet- works with the same configuration which share parameters with each other. A subnetwork is typically a CNN model, and all the sub- networks are connected by a loss function. It is normally used to measure the similarity between the input images. This project aims to compare using simple Siamese network features with transfer learning approach on shoes dataset classification accuracy. Also, investigate the effect of the Siamese network on the features orig- inated from transfer learning. The results show that the features from our implementation of the Siamese network lead to better ac- curacy. Farther more, it shows a significant improvement in the feature from transfer learning.
 
 ## Transfer Learning 
 
@@ -36,6 +36,10 @@ Examples of four classes in the dataset.
 
 In order to create a balanced dataset, we use a subset of this dataset, which contains 1283 slippers, 1500 sandals, 1500 boots and 1500 shoes.
 
+## Structure
+All the Jupyter-notebook files are in the ```src``` folder. Our presentation slide is in the ```ppt``` folder. And the latex-based report is in the ```report``` folder. 
+
+In the ```src``` folder, we have five files, and they are for different implementations. You can easily differentiate them by the file name.  
 
 ## Execution
 These commands are only for the UAB Cheaha server (https://docs.uabgrid.uab.edu/wiki/cheaha). <br>
