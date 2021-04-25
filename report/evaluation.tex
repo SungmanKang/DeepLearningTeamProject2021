@@ -1,7 +1,7 @@
 \section{Evaluation}
 
 \subsection{Implementation of Transfer Learning}
-In our first implementation, as shown on figure \ref {fig:xceptiona}, we feed an image to Xception model and took the average pooling of the last layer from Xception, and then we used a classification layer directly to classify the image. We used the cross-entropy loss for training. For this approach, we experimented by freezing the weights from Xception and by training it from scratch. 
+In our first implementation, as shown in figure \ref {fig:xceptiona}, we feed an image to Xception model and took the average pooling of the last layer from Xception, and then we used a classification layer directly to classify the image. We used the cross-entropy loss for training. For this approach, we experimented by freezing the weights from Xception and by training it from scratch. 
 
 \begin{figure}[h]
  \centering
@@ -21,13 +21,13 @@ In our first implementation, as shown on figure \ref {fig:xceptiona}, we feed an
  \label{fig:xception}
 \end{figure}
 
-On the second implementation, as shown on figure \ref{fig:xceptionb}, we froze learned weights from Xception but we added a fully connected layer before the prediction layer. For this fully connected, We used 512 Victor dimension because we wanted to match it with the best embedding size of our implementation for siamese network for the comparison. 
+On the second implementation, as shown in figure \ref{fig:xceptionb}, we froze learned weights from Xception but we added a fully connected layer before the prediction layer. For this fully connected, We used 512 Victor dimension because we wanted to match it with the best embedding size of our implementation for siamese network for the comparison. 
 
 We used Adam optimizer with learning rate of 0.001 for all transfer learning approaches.
 
 \subsection{Implementation of Siamese Network}
 
-The architecture of our implementations of the siamese network is shown as figure \ref{fig:model}. Our network consists of a batch input layer and a deep CNN followed by L2 normalization, which results in the image embedding. This is followed by a loss function during training. Note that the siamese network was designed originally for calculating the similarity between images, not the image classification. Normally, it would have a distance function to compute the similarity between the two embedding vectors as the final outputs. However, our project is for the image classification problem, so we add one more fully connected layer on top of that and trained it to predict the class of the embeddings (instead of the image). 
+The architecture of our implementations of the siamese network is shown as in figure \ref{fig:model}. Our network consists of a batch input layer and a deep CNN followed by L2 normalization, which results in the image embedding. This is followed by a loss function during training. Note that the siamese network was designed originally for calculating the similarity between images, not the image classification. Normally, it would have a distance function to compute the similarity between the two embedding vectors as the final outputs. However, our project is for the image classification problem, so we add one more fully connected layer on top of that and trained it to predict the class of the embeddings (instead of the image). 
 
 \begin{figure}[h]
   \centering
@@ -69,10 +69,17 @@ We used Adam optimizer with learning rate of 0.001 for all Siamese Network appro
   \label{fig:xception_cnn}
 \end{figure}
 
-\subsection{Results and Analysis}
+\subsection{Analysis and Results}
 In this project, we have implemented three variants of transfer learning and three variants of the siamese network, as we mentioned in the last section. In this section, we compare the results of all the variants based on the classification accuracy and the time-consume. All our experiments are executed on the Cheaha supercomputer with a single GPU. 
 
-(Here you may add some implementation details.  ...)
+The description and diagrams in 5.1 and 5.2 report our final model and hyperparameters. However, we have gone through a long process of model engineering and hyperparameter tuning to reach this final implementation. The following paragraphs describes this process step by step.
+Step 1: building the simplest transfer learning model to identify our baseline. We turned several hyperparameters including optimizers (Adam and SGD with 0.9 momentum), learning rate (0.01, 0.001), and number of epochs (5, 10, 20, 30).
+Step 2: building the CNN model to extract features for Siamese network. We used inputs size of 64x64, 102x102, and 102x136 (the original image size). The last two yields the same results in most experiments so we selected 102 X 102 as the input size for all experiments. Of course, with three channels since the images are of RGB color. Thin, we examine variance models.
+- 2 layers of (conv, relu, maxpooling, dropout) with and without batch normalization and with different hyperparameters like number of filters, kennel size, polling size, and dropout rates. This is followed by a flatten layer and 1 or two dense layers. For the last dense (embedding) layer, we used 48, 64, and jumped to 512 where we get our best accuracy.
+- 3 and 4 layers of (conv, relu, maxpooling, dropout) with increasing filters without padding. This is followed by a global average pooling instead of flatten layer and single dense layers. This approach led to overfitting no matter what hyperparameter tuning that we have tried.
+Therefore, we went with the first approach with simple convolutions followed by flatten and 2 dense layers. We use the same CNN architecture to build the siamese network which we tested using contrastive and triplet loss.
+Step 3: adding a single dense layer for Xception (transfer learning) and also training all layers in  Xception model.
+Step 4: we combined transfer learning with siamese network by adding 1 and 2 dense layers on top of extracted features from exception and use the triplet loss to train our last model.
 
 Table \ref{table:resultA}  summarizes the results of these six implementations trained on the dataset with 1500 images per category. T0 is the implementation that directly classifying the features extracted from Xception. T1 is the implementation that adds a single fully connected layer before the prediction. We observe that this leads to a 1\% decrease in performance. Most likely the large dense vector leads to over-fitting. We also trained Xception from scratch on this data set as shown in T2, and it improved the results by around 4\% when compared to T0. As shown in the figure \ref{fig:acc_ter}, it's clear that T2 is the best one among these three variants. Note that we've also made a comparison of the total time taken of the training, as depicted in the figure \ref{fig:time_ter}. The most interesting thing is that the time-consuming of each variant is roughly increasing linearly for these three variants. That means the time taken for each layer of the Xception is almost the same. 
 
@@ -213,7 +220,7 @@ Moreover, we also trained the variants on a larger dataset that we mentioned in 
     \label{fig:sia_con_data}
 \end{figure}
 
-In addition, we can also try to compute the similarity between image pairs, as shown in figure \ref{fig:similarity}. Note that the smaller distance between the two images means they are more similar to each other. For example, in the figure, the distance between the first pair in the first row is 0.10, and it turns out that they belong to the same class Slippers. As for the second pair in the same row, the class of left image is Slippers and the class of right image is Shoes. The distance between them is 0.84, which is much larger than the first pair, as we expected. 
+In addition, we can also try to compute the similarity between image pairs, as shown in figure \ref{fig:similarity}. Note that the smaller distance between the two images means they are more similar to each other. For example, in the figure, the distance between the first pair in the first row is 0.10, and it turns out that they belong to the same class Slippers. As for the second pair in the same row, the class of the left image is Slippers and the class of right image is Shoes. The distance between them is 0.84, which is much larger than the first pair, as we expected. 
 
 \begin{figure}[h]
   \centering

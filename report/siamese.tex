@@ -50,7 +50,7 @@ L = \frac{1}{2N}\sum_{i=1}^{N}[y_i || v_{1,i} - v_{2,i} ||_2^2 +  (1 - y_i)\{ ma
 
 \subsection{Triplet Loss}
 
-Triplets loss function goes further by considering positive and negative pairs at the same time. The training process is shown by figure \ref{fig:triplet}. We can see that the model with triplets loss uses triplets of training samples, instead of pairs. A triplet consists of an anchor, a positive sample, and a negative sample. The goal is to minimize the distance between the anchor sample and the positive sample while maximizing the distance between the anchor sample and the negative sample. Assume $x_{a,i}, x_{p,i}, x_{n,i}$ are the anchor sample, positive sample and negative sample in a triplet respectively. $v_{a,i}, v_{p,i}, v_{n,i}$ are their correspondent embedding vectors. Note that there are no needed labels. The loss function could be as followed. 
+Triplets loss function goes further by considering positive and negative pairs at the same time. The training process is shown in figure \ref{fig:triplet}. We can see that the model with triplets loss uses triplets of training samples, instead of pairs. A triplet consists of an anchor, a positive sample, and a negative sample. The goal is to minimize the distance between the anchor sample and the positive sample while maximizing the distance between the anchor sample and the negative sample. Assume $x_{a,i}, x_{p,i}, x_{n,i}$ are the anchor sample, positive sample and negative sample in a triplet respectively. $v_{a,i}, v_{p,i}, v_{n,i}$ are their correspondent embedding vectors. Note that there are no needed labels. The loss function could be as followed. 
 
 \begin{equation}
 L = \frac{1}{N}\sum_{i=1}^{N}max(0, || v_{a,i} - v_{p,i} ||_2^2 - || v_{a,i} - v_{n,i} ||_2^2  + m )

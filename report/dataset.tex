@@ -33,5 +33,5 @@ In this project, we only need the four major categories. So we merge all the ima
 
 Besides, we know data argumentation such as flips, translations or rotations is good for getting more images. The ImageOps module contains some image processing operations such as rotate or scale. However, Rotation or Scaling can backfire by damaging classifiable features. So we choose the mirror function (horizontal flip). In this way, we try to create a larger sub-dataset which is shown in the third row of \ref{table:data}. In this project, we conduct an experiment to compare these two datasets.
 
-On the other hand, our models implemented in this project all work well with a small dataset. Then we partition these samples into train, test, validation datasets with a ratio of 8:1:1. 
+On the other hand, our models implemented in this project all work well with a small dataset. Then we partition these samples into train, test, validation datasets with a ratio of 8:1:1. We applied this to the two dataset groups and saved each partition in a separate folder to train evaluate and test on the same data for all models.
 
